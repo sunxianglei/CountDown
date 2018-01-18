@@ -11,6 +11,9 @@ import android.widget.TextView;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author sunxianglei
@@ -141,7 +144,17 @@ public class MyWindowManager {
     public static void updateUsedPercent(Context context) {
         if (countDownView != null) {
             TextView percentView = (TextView) countDownView.findViewById(R.id.percent);
-            percentView.setText(getUsedPercentValue(context));
+            String endDate = "2018-02-13";
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            long diff = 0;
+            try {
+                Date date1 = new Date();
+                Date date2 = format.parse(endDate);
+                diff = (date2.getTime() - date1.getTime())/(24*3600*1000);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            percentView.setText("倒计时\n" + diff + "天");
         }
     }
 

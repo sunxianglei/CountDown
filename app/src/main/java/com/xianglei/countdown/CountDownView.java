@@ -1,6 +1,7 @@
 package com.xianglei.countdown;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -74,6 +75,8 @@ public class CountDownView extends LinearLayout {
      */
     private float yInView;
 
+    private Context mContext;
+
     public CountDownView(Context context) {
         this(context, null);
     }
@@ -81,6 +84,7 @@ public class CountDownView extends LinearLayout {
     public CountDownView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
+        mContext = context;
     }
 
     private void init(Context context){
@@ -90,7 +94,7 @@ public class CountDownView extends LinearLayout {
         viewWidth = view.getLayoutParams().width;
         viewHeight = view.getLayoutParams().height;
         TextView percentView = (TextView) findViewById(R.id.percent);
-        percentView.setText(MyWindowManager.getUsedPercentValue(context));
+        percentView.setText("0天");
     }
 
     @Override
@@ -114,7 +118,14 @@ public class CountDownView extends LinearLayout {
             case MotionEvent.ACTION_UP:
                 // 如果手指离开屏幕时，xDownInScreen和xInScreen相等，且yDownInScreen和yInScreen相等，则视为触发了单击事件。
                 if (xDownInScreen == xInScreen && yDownInScreen == yInScreen) {
-                    openBigWindow();
+                    Intent intent = new Intent();
+//                    intent.setAction("android.intent.action.MAIN");
+//                    intent.setAction("android.intent.action.CountDown");
+//                    intent.addCategory("android.intent.category.LAUNCHER");
+                    intent.setClassName("com.xianglei.countdown",
+                            "com.xianglei.countdown.MainActivity");
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    getContext().startActivity(intent);
                 }
                 break;
             default:
@@ -145,10 +156,10 @@ public class CountDownView extends LinearLayout {
     /**
      * 打开大悬浮窗，同时关闭小悬浮窗。
      */
-    private void openBigWindow() {
-//        MyWindowManager.createBigWindow(getContext());
-        MyWindowManager.removeCountDownView(getContext());
-    }
+//    private void openBigWindow() {
+////        MyWindowManager.createBigWindow(getContext());
+//        MyWindowManager.removeCountDownView(getContext());
+//    }
 
     /**
      * 用于获取状态栏的高度。

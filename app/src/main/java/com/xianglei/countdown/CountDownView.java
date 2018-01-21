@@ -1,5 +1,6 @@
 package com.xianglei.countdown;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
@@ -9,7 +10,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.lang.reflect.Field;
 
@@ -93,8 +93,6 @@ public class CountDownView extends LinearLayout {
         View view = findViewById(R.id.small_window_layout);
         viewWidth = view.getLayoutParams().width;
         viewHeight = view.getLayoutParams().height;
-        TextView percentView = (TextView) findViewById(R.id.percent);
-        percentView.setText("0天");
     }
 
     @Override
@@ -118,14 +116,17 @@ public class CountDownView extends LinearLayout {
             case MotionEvent.ACTION_UP:
                 // 如果手指离开屏幕时，xDownInScreen和xInScreen相等，且yDownInScreen和yInScreen相等，则视为触发了单击事件。
                 if (xDownInScreen == xInScreen && yDownInScreen == yInScreen) {
-                    Intent intent = new Intent();
-//                    intent.setAction("android.intent.action.MAIN");
-//                    intent.setAction("android.intent.action.CountDown");
-//                    intent.addCategory("android.intent.category.LAUNCHER");
-                    intent.setClassName("com.xianglei.countdown",
-                            "com.xianglei.countdown.MainActivity");
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    getContext().startActivity(intent);
+                    try {
+                        Intent intent = new Intent();
+                        intent.setAction("android.intent.action.MAIN");
+                        intent.addCategory("android.intent.category.CountDown");
+//                    intent.setClassName("com.xianglei.countdown",
+//                            "com.xianglei.countdown.MainActivity");
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        getContext().startActivity(intent);
+                    }catch (ActivityNotFoundException e){
+                        e.printStackTrace();
+                    }
                 }
                 break;
             default:

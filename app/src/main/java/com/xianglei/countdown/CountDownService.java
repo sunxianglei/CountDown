@@ -34,18 +34,15 @@ public class CountDownService extends Service {
      */
     private ScheduledExecutorService executorTimer;
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+    private TimerTask  refreshTask;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // 开启定时器，每隔0.5秒刷新一次
+        // 开启定时器，每隔1秒刷新一次
         if (executorTimer == null) {
             executorTimer = new ScheduledThreadPoolExecutor(2);
-            executorTimer.scheduleAtFixedRate(new RefreshTask(), 0, 500, TimeUnit.MILLISECONDS);
+            refreshTask =  new RefreshTask();
+            executorTimer.scheduleAtFixedRate(refreshTask, 0,  1000, TimeUnit.MILLISECONDS);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -54,8 +51,16 @@ public class CountDownService extends Service {
     public void onDestroy() {
         super.onDestroy();
         // Service被终止的同时也停止定时器继续运行
-        executorTimer.shutdownNow();
+        MyWindowManager.removeCountDownView(getApplicationContext());
+        refreshTask.cancel();
+        executorTimer.shutdown();
         executorTimer = null;
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     class RefreshTask extends TimerTask {

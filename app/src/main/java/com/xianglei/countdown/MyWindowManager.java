@@ -78,6 +78,7 @@ public class MyWindowManager {
             }
             countDownView.setParams(countDownViewParams);
             windowManager.addView(countDownView, countDownViewParams);
+            updateUsedPercent(context);
         }
     }
 
@@ -136,7 +137,7 @@ public class MyWindowManager {
 //    }
 
     /**
-     * 更新小悬浮窗的TextView上的数据，显示内存使用的百分比。 
+     * 更新小悬浮窗的TextView上的数据
      *
      * @param context
      *            可传入应用程序上下文。 
@@ -154,7 +155,11 @@ public class MyWindowManager {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            percentView.setText("倒计时\n" + diff + "天");
+            if(diff < 0){
+                percentView.setText("已超期");
+            }else {
+                percentView.setText(MainActivity.TITLE + "\n" + diff + "天");
+            }
         }
     }
 

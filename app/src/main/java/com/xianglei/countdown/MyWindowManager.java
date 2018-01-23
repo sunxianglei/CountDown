@@ -145,14 +145,14 @@ public class MyWindowManager {
     public static void updateUsedPercent(Context context) {
         if (countDownView != null) {
             TextView percentView = (TextView) countDownView.findViewById(R.id.percent);
-            String endDate = "2018-02-13";
+            String endDate = MainActivity.DATE;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             long diff = 0;
             try {
                 Date date1 = new Date();
                 Date date2 = format.parse(endDate);
                 diff = (date2.getTime() - date1.getTime())/(24*3600*1000);
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             if(diff < 0){

@@ -45,7 +45,7 @@ public class MyJobService extends JobService {
     @Override
     public boolean onStopJob(JobParameters params) {
         Log.v("MyJobService", "执行了onStopJob方法");
-        scheduleJob(getJobInfo());
+//        scheduleJob(getJobInfo());
         return true;
     }
 

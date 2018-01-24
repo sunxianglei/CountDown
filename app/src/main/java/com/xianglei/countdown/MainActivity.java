@@ -1,10 +1,15 @@
 package com.xianglei.countdown;
 
 import android.app.DatePickerDialog;
-import android.content.Intent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Process;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -23,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button startBtn;
     private Button stopBtn;
     private int year, month, day;
+
+    private JobScheduler jobScheduler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,23 +74,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }else{
                         TITLE = "倒计时";
                     }
-                    Intent intent = new Intent(MainActivity.this, MyJobService.class);
-                    startService(intent);
+                    jobSchedule();
                     finish();
                 }
                 break;
             case R.id.btn_stop:
-//                MyJobService.cancelJobs();
-                Intent intent = new Intent(MainActivity.this, MyJobService.class);
-                Intent intent1 = new Intent(MainActivity.this, CountDownService.class);
-                stopService(intent);
-                stopService(intent1);
-                finish();
                 TITLE = " 倒计时";
                 DATE = "2018-02-20";
+                cancelJob();
+                Process.killProcess(Process.myPid());
                 break;
             default:
                 break;
         }
+    }
+
+    public void jobSchedule(){
+        Log.v("MyJobService", "调度job");
+        jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        JobInfo.Builder builder = new JobInfo.Builder(1, new ComponentName(this, MyJobService.class));
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
+        builder.setPersisted(true);
+//        builder.setRequiresCharging(false);
+//        builder.setRequiresDeviceIdle(false);
+        //间隔1000毫秒
+        builder.setPeriodic(60 * 1000);
+        jobScheduler.schedule(builder.build());
+    }
+
+    private void cancelJob(){
+        jobScheduler.cancel(1);
     }
 }

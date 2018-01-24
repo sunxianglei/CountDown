@@ -53,6 +53,7 @@ public class CountDownService extends Service {
         // Service被终止的同时也停止定时器继续运行
         MyWindowManager.removeCountDownView(getApplicationContext());
         refreshTask.cancel();
+        refreshTask = null;
         executorTimer.shutdown();
         executorTimer = null;
     }
